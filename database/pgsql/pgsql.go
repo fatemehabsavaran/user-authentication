@@ -1,4 +1,4 @@
-package pqsql
+package pgsql
 
 import (
 	"github.com/fatemehabsavaran/user-authentication.git/models"
@@ -46,9 +46,14 @@ func (p *PgsqlService) CreateUser(user *models.User) error {
 
 func (p *PgsqlService) GetUserByEmail(email string) (models.User, error) {
 	getUser := User{}
-	if err := p.db.Model(&User{}).Where("email = ?", email).Find(&getUser).Error; err != nil {
+	if err := p.db.Model(&User{}).Where("email = ?", email).First(&getUser).Error; err != nil {
 		return models.User{}, err
 	}
+
+	//if getUser.ID == 0 {
+	//	return models.User{}, fmt.Errorf("user not found")
+	//}
+
 	return models.User{
 		ID:        getUser.ID,
 		Email:     getUser.Email,

@@ -1,4 +1,4 @@
-package pqsql
+package pgsql
 
 import "time"
 
