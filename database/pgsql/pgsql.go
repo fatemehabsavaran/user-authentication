@@ -7,7 +7,7 @@ import (
 )
 
 type PgsqlConfig struct {
-	Dsn string
+	Dsn string `json:"dsn"`
 }
 
 type PgsqlService struct {
@@ -46,7 +46,7 @@ func (p *PgsqlService) CreateUser(user *models.User) error {
 
 func (p *PgsqlService) GetUserByEmail(email string) (models.User, error) {
 	getUser := User{}
-	if err := p.db.Model(&User{}).Where("email = ?", email).First(&getUser).Error; err != nil {
+	if err := p.db.Model(&User{}).Where("email = ?", email).Limit(1).Find(&getUser).Error; err != nil {
 		return models.User{}, err
 	}
 

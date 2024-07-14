@@ -8,8 +8,8 @@ import (
 )
 
 type JWTConfig struct {
-	Secret string
-	Expire time.Duration
+	Secret string        `json:"secret"`
+	Expire time.Duration `json:"expire"`
 }
 type JWTService struct {
 	config JWTConfig
@@ -23,12 +23,12 @@ func NewFromConfig(config JWTConfig) *JWTService {
 
 func (j *JWTService) GenerateToken(user models.User) (models.Token, error) {
 	ExpiredAt := time.Now().Add(j.config.Expire)
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodEdDSA, jwt.MapClaims{
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId":    user.ID,
 		"expiredAt": ExpiredAt,
 	})
 
-	tokenStr, err := jwtToken.SignedString(j.config.Secret)
+	tokenStr, err := jwtToken.SignedString([]byte(j.config.Secret))
 	if err != nil {
 		return models.Token{}, err
 	}
